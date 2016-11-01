@@ -9,8 +9,8 @@ import ReactCSSTransitionGroup from 'react/lib/ReactCSSTransitionGroup';
 
 async function loadBloombergFeed() {
   return new Promise(function(resolve, reject) {
-    resolve(dummyData);
-    let x = new XMLHttpRequest();
+    setTimeout(()=>{resolve(dummyData)}, 1000);
+    /*let x = new XMLHttpRequest();
     x.open("GET", "https://crossorigin.me/https://www.bloomberg.com/feeds/podcasts/etf_report.xml", true);
     x.onreadystatechange = function () {
       if (x.readyState === 4 && x.status === 200)
@@ -25,8 +25,8 @@ async function loadBloombergFeed() {
         })
       }
     };
-    x.send(null);
-  }) 
+    x.send(null);*/
+  })
 }
 
 class App extends Component {
@@ -52,14 +52,9 @@ class App extends Component {
   }
   handleChange(event) {
     this.setState({filterValue: event.target.value});
-
   }
   playAll() {
-    let playingAll = this.state.playingAll;
-    Array.from(document.getElementsByClassName("player")).forEach((item) => {
-      playingAll ? item.pause() : item.play();
-    });
-    this.setState({playingAll: !playingAll});
+    //Complete functionality there
   }
   render() {
     return (
@@ -76,15 +71,15 @@ class App extends Component {
         />
         <button type="button" onClick={this.playAll} className="btn btn-default">Play All</button>
         <div className="App-intro row">
+          {(() => {
+            if (this.state.loading) {
+              return <Spinner style={{paddingTop: 20}} spinnerName="three-bounce" />
+            }
+          })()}
           <ReactCSSTransitionGroup 
             transitionName="example" 
             transitionEnterTimeout={500} 
             transitionLeaveTimeout={300}>
-            {(() => {
-              if (this.state.loading) {
-                return <Spinner style={{paddingTop: 20}} spinnerName="three-bounce" />
-              }
-            })()}
             {this.state.feed.item
               .filter((item, i) => { 
                 return this.state.filterValue != "" ? item.title[0].startsWith(this.state.filterValue): true})
