@@ -1,3 +1,5 @@
+[slides from presentation](http://bloombergreactworkshop.surge.sh/)
+
 ## Prerequisites
 ### Node 
 [Install node.js](https://nodejs.org/en/download/)
