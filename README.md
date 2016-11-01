@@ -242,4 +242,12 @@ import Spinner from 'react-spinkit';
 </div>
 ```
 
+## Fun Challenge
+Add a function to the component called 'playAll' that toggles starting and stopping all of the audio elements in the page.
+Add this to the 'play all' button. 
+Hint - you can get all of the audio elements on the page using the following.
+```js
+document.getElementsByClassName("player")
+```
+
 
