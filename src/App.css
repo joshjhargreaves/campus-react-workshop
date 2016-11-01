@@ -22,21 +22,3 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
-
-.App-enter {
-  opacity: 0.01;
-}
-
-.Appt-enter.example-enter-active {
-  opacity: 1;
-  transition: opacity 500ms ease-in;
-}
-
-.App-leave {
-  opacity: 1;
-}
-
-.App-leave.example-leave-active {
-  opacity: 0.01;
-  transition: opacity 300ms ease-in;
-}
