@@ -148,7 +148,11 @@ We can add this `input` component to our render method.
 />
 
 // Add this to our constructor
-this.handleChange = this.handleChange.bind(this);
+constructor() {
+...
+  this.handleChange = this.handleChange.bind(this);
+...
+}
 
 //Add this function after our constructor 
 handleChange(event) {
@@ -168,3 +172,74 @@ Before we map our items on our state to React elements, we can first filter by t
   ...
   }
 ```
+
+React allows us to animate filtering of our items using [ReactCSSTransitionGroup](https://facebook.github.io/react/docs/animation.html). 
+
+We can add this to our index.css file. 
+```css
+.example-enter {
+  opacity: 0.01;
+}
+
+.example-enter.example-enter-active {
+  opacity: 1;
+  transition: opacity 500ms ease-in;
+}
+
+.example-leave {
+  opacity: 1;
+}
+
+.example-leave.example-leave-active {
+  opacity: 0.01;
+  transition: opacity 300ms ease-in;
+}
+```
+
+And wrap our podcast items in this component.
+Notice that the `transitionName` property of the ReactCSSTransitionGroup component
+corresponds to 'example' prefix in our css. 
+```js
+import ReactCSSTransitionGroup from 'react/lib/ReactCSSTransitionGroup';
+
+...
+
+<ReactCSSTransitionGroup 
+  transitionName="example" 
+  transitionEnterTimeout={500} 
+  transitionLeaveTimeout={300}>
+    {this.state.feed.item
+        .filter((item, i) => { 
+          return this.state.filterValue != "" ? item.title[0].startsWith(this.state.filterValue): true})
+        .map((item, i) => (
+          <div className="col-md-4 panel panel-defaul" style={{'height': 400, 'overflow': 'hidden'}} key={i}>
+            <div className="panel-body">
+              <h1>{item.title[0]}</h1>
+              <div style={{'textOverflow': 'ellipsis'}}>{item['itunes:summary'][0]}</div>
+              <audio className="player" controls>
+                <source src={item.link[0]} type='audio/mp3' />
+              </audio>
+            </div>
+          </div>
+      ))
+    }
+</ReactCSSTransitionGroup> 
+```
+
+### Adding a loading spinner
+We add the loading property to our state; initially set to true and set to false after
+our loading request finishes.
+```js
+import Spinner from 'react-spinkit';
+...
+<div className="App-intro row">
+  {(() => {
+    if (this.state.loading) {
+      return <Spinner style={{paddingTop: 20}} spinnerName="three-bounce" />
+    }
+  })()
+  ...
+</div>
+```
+
+
