@@ -48,8 +48,9 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 The page will reload if you make edits.<br>
 You will also see any lint errors in the console.
 
-## Display a list of podcasts
+## stage-1 - Display a list of podcasts
 We're going to be editing src/app.js.<br>
+
 This is where our main component is that is being rendered to the screen when we run `npm start`.
 
 ```js
@@ -67,8 +68,15 @@ class App extends Component {
       loading: true
     }
   }
+  // this is called when our component 'loads'
+  // so this will be when we fetch items to display
   async componentDidMount(){ 
-   //Do something
+    let feed = await loadBloombergFeed();
+    // Pick the first 20  
+    feed.item = feed.item.slice(1,20);
+    // Update our state with the items and set loading to false
+    this.setState({feed: feed, loading: false});
+    console.log(feed);
   }
   render() {
     return (
@@ -96,10 +104,10 @@ class App extends Component {
   }
 ```
 
-For each one of our items in `this.state.feed.item` we will render a `div` with the title and an `audio` element with the mp3 as the source. 
+For each one of our items in `this.state.feed.item` we will render a `div` with the title and an `audio` element with the mp3 as the source. You will not see anything currently, because we never update our state with some actual items. 
 
-
-Firstly we are going to fetch some Bloomberg podcasts with the below code. 
+### Fetching some podcasts
+We can fetch some podcasts with the below function and we call 
 
 ```js
 async function loadBloombergFeed() {
@@ -124,5 +132,39 @@ async function loadBloombergFeed() {
     x.send(null);
   }) 
 }
+```
 
+## Stage-2 - Filtering results by keyword & Adding Filter Animations
+Input fields (Forms) are different from other components because they can be mutated by user actions. [link to documentation](https://facebook.github.io/react/docs/forms.html).<br>
+We can manage the state of our input field through the state of our component. 
+
+We can add this `input` component to our render method. 
+```js
+<input
+  className="form-control"
+  type="text"
+  value={this.state.filterValue}
+  onChange={this.handleChange}
+/>
+
+// Add this to our constructor
+this.handleChange = this.handleChange.bind(this);
+
+//Add this function after our constructor 
+handleChange(event) {
+  this.setState({filterValue: event.target.value});
+}
+```
+
+Our state is now updated with our filterValue and we can now conditionally render based on this.state.filterValue in our `render` function.
+
+Before we map our items on our state to React elements, we can first filter by the value. 
+
+```js
+{this.state.feed.item
+  .filter((item, i) => { 
+    return this.state.filterValue != "" ? item.title[0].startsWith(this.state.filterValue): true})
+  .map((item, i) => {
+  ...
+  }
 ```
